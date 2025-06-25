@@ -10,9 +10,6 @@ interface Movie {
   poster: string;
 }
 
-// Base URL configuration - can be changed based on environment
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://jumboboxd.soylemez.net';
-
 export default function MovieList() {
     const params = useParams();
     const [, navigate] = useLocation();
@@ -27,7 +24,7 @@ export default function MovieList() {
         const fetchMovies = async () => {
             console.log('Fetching movies for listId:', listId);
             try {
-                const url = `${API_BASE_URL}/api/list?page=${listId}`;
+                const url = `/api/list?page=${listId}`;
                 console.log('Fetching from URL:', url);
                 const response = await fetch(url);
                 if (!response.ok) {
