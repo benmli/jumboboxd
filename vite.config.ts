@@ -5,6 +5,14 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
   server: {
     port: 5173,
+    // use a proxy to bypass CORS policy
+    proxy: {
+      '/api': {
+        target: 'https://jumboboxd.soylemez.net',
+        changeOrigin: true,
+        secure: false,
+      },
+    }
   },
   plugins: [react()],
   test: {
