@@ -10,7 +10,7 @@ interface MovieCardProps {
 export default function MovieCard({ title, year, poster, id }: MovieCardProps) {
   return (
     <Link href={`/movie/${id}`}>
-      <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer h-full">
         <div className="relative">
           <img 
             src={poster} 

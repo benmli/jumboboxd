@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react';
 
 const Navbar = () => {
   return (
@@ -8,12 +9,23 @@ const Navbar = () => {
           JumboBoxd
         </Link>
         <div className="space-x-4">
-          <Link href="/" className="hover:text-gray-300">
+          <SignedOut>
+            <SignInButton>
+              <button className="hover:text-gray-300">Log In</button>
+            </SignInButton>
+            <SignUpButton>
+              <button className="hover:text-gray-300">Sign Up</button>
+            </SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          {/* <Link href="/" className="hover:text-gray-300">
             Sign Up
           </Link>
           <Link href="/users/me" className="hover:text-gray-300">
             Log In
-          </Link>
+          </Link> */}
         </div>
       </div>
     </nav>

@@ -11,8 +11,19 @@ export default defineConfig({
         target: 'https://jumboboxd.soylemez.net',
         changeOrigin: true,
         secure: false,
+
+        // exclude webhooks from proxy
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            // don't proxy webhook requests
+            if (req.url?.includes('/api/webhooks')) {
+              proxyReq.destroy();
+              return;
+            }
+          });
+        },
       },
-    }
+    },
   },
   plugins: [react()],
   test: {

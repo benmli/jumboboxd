@@ -18,7 +18,7 @@ export default function MovieDetails() {
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        const response = await fetch(`https://jumboboxd.soylemez.net/api/movie?id=${params?.id}`);
+        const response = await fetch(`/api/movie?id=${params?.id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch movie details');
         }

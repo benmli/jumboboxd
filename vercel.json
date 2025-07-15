@@ -1,0 +1,17 @@
+{
+    "rewrites": [
+      {
+        "source": "/api/list",
+        "destination": "https://jumboboxd.soylemez.net/api/list"
+      },
+      {
+        "source": "/api/movie",
+        "destination": "https://jumboboxd.soylemez.net/api/movie"
+      }
+    ],
+    "functions": {
+        "api/webhooks.ts": {
+            "includeFiles": "api/db/**"
+        }
+    }
+}
