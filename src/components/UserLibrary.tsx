@@ -68,7 +68,7 @@ export default function UserLibrary() {
   if (!user) return <p className="p-4">Please log in to see your library.</p>;
   if (loading) return <p className="p-4">Loading your library...</p>;
   if (error) return <p className="p-4 text-red-500">Error: {error}</p>;
-  if (!userMovies.length) return <p className="p-4">No watched or rated movies yet.</p>;
+  if (!userMovies.length) return <p className="p-4">No watched movies yet.</p>;
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
