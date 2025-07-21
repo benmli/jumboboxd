@@ -18,21 +18,17 @@ const Navbar = () => {
             </SignUpButton>
           </SignedOut>
           <SignedIn>
-            <UserButton />
+            <div className="flex items-center space-x-4">
+              <Link href="/library" className="howver:text-gray-300">
+                My Library
+              </Link>
+              <UserButton />
+            </div>
           </SignedIn>
-          {/* <Link href="/" className="hover:text-gray-300">
-            Sign Up
-          </Link>
-          <Link href="/users/me" className="hover:text-gray-300">
-            Log In
-          </Link> */}
         </div>
       </div>
     </nav>
   );
 };
-
-// is it recommended to set tailwind format/structure in a separate file? like fonts, color theme, etc.
-//tailwind.config.js
 
 export default Navbar; 

@@ -1,6 +1,6 @@
 import { Webhook } from 'svix';
 import { WebhookEvent } from '@clerk/backend';
-import { db, usersTable } from './db/index';
+import { db, usersTable } from './db/index.js';
 
 export async function POST(request: Request) {
   console.log('DB:', db);
