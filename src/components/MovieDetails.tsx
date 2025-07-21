@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "wouter";
 import { useUser } from '@clerk/clerk-react';
-import StarRatings from 'react-star-ratings';
+import { Rating } from 'react-simple-star-rating';
 
 interface Comment {
   id: number;
@@ -125,17 +125,16 @@ export default function MovieDetails() {
             <div className="mt-4 font-semibold flex items-center gap-2">
               <span>Average rating:</span>
               {movie.averageRating ? (
-                <span className="flex items-center align-middle">
-                  <StarRatings
-                    rating={movie.averageRating}
-                    starRatedColor="#facc15"
-                    numberOfStars={10}
-                    name="rating"
-                    starDimension="20px"
-                    starSpacing="2px"
-                    isSelectable={false}
+                <span className="flex items-center gap-2">
+                  <Rating
+                    readonly
+                    size={24}
+                    initialValue={movie.averageRating}
+                    allowFraction
+                    SVGstyle={{ display: 'inline-block', verticalAlign: 'text-top' }}
+                    iconsCount={10}
                   />
-                  <span className="ml-2">{movie.averageRating.toFixed(2)}</span>
+                  {movie.averageRating.toFixed(2)}
                 </span>
               ) : (
                 <p className="text-sm text-gray-400 italic">No ratings yet. Be the first one to rate this movie!</p>
@@ -147,14 +146,13 @@ export default function MovieDetails() {
                   <div className="mb-2 text-blue-700 font-semibold flex items-center gap-2">
                     <span>Your current rating:</span>
                     <span className="flex items-center align-middle">
-                      <StarRatings
-                        rating={userRating}
-                        starRatedColor="#facc15"
-                        numberOfStars={10}
-                        name="rating"
-                        starDimension="20px"
-                        starSpacing="2px"
-                        isSelectable={false}
+                      <Rating
+                        readonly
+                        size={24}
+                        initialValue={userRating}
+                        allowFraction
+                        SVGstyle={{ display: 'inline-block', verticalAlign: 'text-top' }}
+                        iconsCount={10}
                       />
                       <span className="ml-2">{userRating}</span>
                     </span>
