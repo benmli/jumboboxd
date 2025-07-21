@@ -26,11 +26,4 @@ export default defineConfig({
     },
   },
   plugins: [react()],
-  test: {
-    coverage: {
-      provider: "istanbul",
-      extension: ".ts",
-      target: ["html", "txt"]
-    }
-  }
 });
