@@ -11,7 +11,8 @@ function verifyToken(request: Request): string | undefined {
   }
   const token = tokenHeader.replace(/^Bearer\s+/i, '');
 
-  const publicKey = process.env.CLERK_JWT_KEY;
+  const publicKey = process.env.CLERK_PEM_PUBLIC_KEY?.replace(/\\n/g, '\n');
+
   if (!publicKey) {
     return undefined;
   }
