@@ -43,13 +43,11 @@ export async function POST(request: Request) {
   const payload = await request.text();
   console.log('Request body length:', payload.length);
 
-  const body = JSON.stringify(JSON.parse(payload));
-
   let evt: WebhookEvent;
 
   // verify payload with headers
   try {
-    evt = wh.verify(body, {
+    evt = wh.verify(payload, {
       'svix-id': svix_id,
       'svix-timestamp': svix_timestamp,
       'svix-signature': svix_signature,
@@ -93,10 +91,10 @@ export async function POST(request: Request) {
   }
 }
 
-export function GET() {
-  console.log('=== WEBHOOK GET ENDPOINT HIT ===');
-  return new Response('Webhook endpoint is working!', {
-    status: 200,
-    headers: { 'Content-Type': 'text/plain' }
-  });
-}
+// export function GET() {
+//   console.log('=== WEBHOOK GET ENDPOINT HIT ===');
+//   return new Response('Webhook endpoint is working!', {
+//     status: 200,
+//     headers: { 'Content-Type': 'text/plain' }
+//   });
+// }

@@ -1,13 +1,57 @@
 import { db, userMovieTable, movieCommentsTable } from './db/index.js';
 import { eq, and } from 'drizzle-orm';
+import jwt, { JwtPayload } from 'jsonwebtoken'
+
+const permittedOrigins = process.env.PERMITTED_ORIGINS;
+
+function verifyToken(request: Request): string | undefined {
+  const tokenHeader = request.headers.get('Authorization');
+  if (!tokenHeader) {
+    return undefined;
+  }
+  const token = tokenHeader.replace(/^Bearer\s+/i, '');
+
+  const publicKey = process.env.CLERK_JWT_KEY;
+  if (!publicKey) {
+    return undefined;
+  }
+  
+  try {
+    const decoded = jwt.verify(token, publicKey, { algorithms: ['RS256'] }) as JwtPayload;
+
+    if (!decoded.exp) {
+      throw new Error("Missing exp in token.");
+    }
+
+    if (!decoded.nbf) {
+      throw new Error("Missing nbf in token.");
+    }
+
+    // validate the token's expiration (exp) and not before (nbf) claims
+    const currentTime = Math.floor(Date.now() / 1000)
+    if (decoded.exp < currentTime || decoded.nbf > currentTime) {
+      throw new Error('Token is expired or not yet valid')
+    }
+
+    // validate the token's authorized party (azp) claim
+    if (decoded.azp && permittedOrigins && !permittedOrigins.includes(decoded.azp)) {
+      throw new Error("Invalid 'azp' claim")
+    }
+
+    return decoded.sub; // Clerk userId
+  } catch (error) {
+    return undefined; // unauthenticated
+  }
+}
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const movieId = url.searchParams.get('id');
-  const userId = url.searchParams.get('userId');
   if (!movieId) {
     return new Response(JSON.stringify({ error: 'Missing movie id' }), { status: 400 });
   }
+
+  const userId = verifyToken(request);
 
   // calculate average rating
   const ratings = await db.select({ rating: userMovieTable.rating })
@@ -22,9 +66,10 @@ export async function GET(request: Request) {
     .from(movieCommentsTable)
     .where(eq(movieCommentsTable.movieId, Number(movieId)));
 
-  // fetch current user's rating/watchedAt if userId present
-  let userRating = null;
-  let userWatchedAt = null;
+  let userRating: number | null = null;
+  let userWatchedAt: string | null = null;
+
+  // fetch current user's rating/watchedAt if user is signed in
   if (userId) {
     const [userMovie] = await db.select()
       .from(userMovieTable)
@@ -45,11 +90,16 @@ export async function GET(request: Request) {
 
 // add comment or rating
 export async function POST(request: Request) {
+  const userId = verifyToken(request);
+  if (!userId) {
+    return new Response(JSON.stringify({ error: 'Not authenticated' }), { status: 401 });
+  }
+
   const body = await request.json();
-  const { userId, movieId, comment, rating, watchedAt } = body;
+  const { movieId, comment, rating, watchedAt } = body;
 
   // Require at least one of rating or watchedAt (comment is optional)
-  if (!userId || !movieId || (rating == null && !watchedAt)) {
+  if (!movieId || (rating == null && !watchedAt)) {
     return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
   }
 

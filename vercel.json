@@ -7,10 +7,6 @@
       {
         "source": "/api/movie",
         "destination": "https://jumboboxd.soylemez.net/api/movie"
-      },
-      {
-        "source": "/(.*)",
-        "destination": "/index.html"
       }
     ]
 }

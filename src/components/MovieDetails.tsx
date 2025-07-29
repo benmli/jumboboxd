@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "wouter";
-import { useUser } from '@clerk/clerk-react';
+import { useUser, useAuth } from '@clerk/clerk-react';
 import { Rating } from 'react-simple-star-rating';
 
 interface Comment {
@@ -31,17 +31,25 @@ export default function MovieDetails() {
   const [rating, setRating] = useState<number | ''>('');
   const [watchedAt, setWatchedAt] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const { getToken } = useAuth();
 
   const fetchMovie = async () => {
     setLoading(true);
     try {
+      const token = await getToken();
+      console.log("TOKEN in fetchmovie:", token);
+
       // fetch movie details from external API
       const detailsRes = await fetch(`/api/movie?id=${params?.id}`);
       if (!detailsRes.ok) throw new Error('Failed to fetch movie details');
       const details = await detailsRes.json();
 
       // fetch comments/ratings from internal API
-      const metaRes = await fetch(`/api/movie-meta?id=${params?.id}${user ? `&userId=${user.id}` : ''}`);
+      const metaRes = await fetch(`/api/movie-meta?id=${params?.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       if (!metaRes.ok) throw new Error('Failed to fetch movie metadata')
       const meta = await metaRes.json();
 
@@ -72,18 +80,26 @@ export default function MovieDetails() {
     if (!user) return;
     setSubmitting(true);
     try {
+      const token = await getToken();
+      console.log("TOKEN in submit:", token);
+
       const res = await fetch('/api/movie-meta', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
-          userId: user.id,
           movieId: params?.id,
           comment: comment.trim() || undefined,
           rating: rating === '' ? undefined : Number(rating),
           watchedAt: watchedAt || undefined,
         }),
       });
-      if (!res.ok) throw new Error('Failed to submit');
+      if (!res.ok) {
+        console.log("Res:", res);
+        throw new Error('Failed to submit');
+      }
       setComment('');
       setRating('');
       setWatchedAt('');
