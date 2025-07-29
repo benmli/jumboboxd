@@ -7,6 +7,7 @@ const permittedOrigins = process.env.PERMITTED_ORIGINS;
 function verifyToken(request: Request): string | undefined {
   const tokenHeader = request.headers.get('Authorization');
   if (!tokenHeader) {
+    console.log("No authorization token header")
     return undefined;
   }
   const token = tokenHeader.replace(/^Bearer\s+/i, '');
@@ -14,6 +15,7 @@ function verifyToken(request: Request): string | undefined {
   const publicKey = process.env.CLERK_PEM_PUBLIC_KEY?.replace(/\\n/g, '\n');
 
   if (!publicKey) {
+    console.log("No public key")
     return undefined;
   }
   
@@ -41,6 +43,7 @@ function verifyToken(request: Request): string | undefined {
 
     return decoded.sub; // Clerk userId
   } catch (error) {
+    console.log("Error in GET request:", error)
     return undefined; // unauthenticated
   }
 }
