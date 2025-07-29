@@ -18,21 +18,16 @@ export default function MovieList() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    console.log('MovieList rendered with listId:', listId);
-
     useEffect(() => {
         const fetchMovies = async () => {
-            console.log('Fetching movies for listId:', listId);
             try {
                 const url = `/api/list?page=${listId}`;
-                console.log('Fetching from URL:', url);
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Failed to fetch movies');
                 }
 
                 const data = await response.json();
-                console.log('Received data:', data);
                 setMovies(data);
                 setError(null);
             } catch (err) {
