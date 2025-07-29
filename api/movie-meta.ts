@@ -10,7 +10,8 @@ function verifyToken(request: Request): string | undefined {
     console.log("No authorization token header")
     return undefined;
   }
-  const token = tokenHeader.replace(/^Bearer\s+/i, '');
+  const token = tokenHeader.split(' ')[1];
+  console.log("Token:", token)
 
   const publicKey = process.env.CLERK_JWT_KEY?.replace(/\\n/g, '\n');
 
